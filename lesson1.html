@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 1 - Overslept / Lunch date</title>
+<style>
+body {
+  font-family: sans-serif;
+  line-height: 1.6;
+  padding: 1rem;
+  background:#fafafa;
+  color:#222;
+  max-width: 800px;
+  margin: 0 auto;
+}
+section {
+  border:2px solid #ccc;
+  border-radius:12px;
+  background:#fff;
+  padding:1rem;
+  margin-bottom:2rem;
+}
+h1,h2 {
+  margin-top:0;
+}
+button {
+  cursor:pointer;
+  padding:0.4rem 0.8rem;
+  border-radius:8px;
+  border:1px solid #888;
+  background:#f0f0f0;
+}
+button:disabled{
+  opacity:0.5;
+}
+.wordlist-btn, .speak-btn, .listen-btn, .shadow-btn {
+  font-size:0.8rem;
+  padding:0.2rem 0.5rem;
+  margin-right:0.5rem;
+}
+.sentence-box {
+  background:#f9f9f9;
+  border-radius:8px;
+  padding:0.8rem;
+  margin-bottom:1rem;
+}
+.shadow-status {
+  font-weight:bold;
+  color:#333;
+  min-height:1.2em;
+}
+.conv-box {
+  font-size:1.05rem;
+  line-height:1.6;
+  background:#f9f9f9;
+  padding:1rem;
+  border-radius:8px;
+  max-width:600px;
+  margin-bottom:1rem;
+  white-space:pre-wrap;
+}
+label { font-size:0.9rem; }
+input[type="text"],
+input[type="number"],
+input[type="date"],
+textarea {
+  width:100%;
+  max-width:400px;
+  padding:0.4rem;
+  border-radius:6px;
+  border:1px solid #999;
+  font-size:1rem;
+}
+audio {
+  width:100%;
+  max-width:400px;
+}
+</style>
+</head>
+<body>
+
+<h1>Lesson 1 - Overslept / Lunch date</h1>
+<p>目標：単語10コを覚える → セリフを意味ごとに理解 → 音読・録音して提出！</p>
+
+<!-- ================= PART 1 ================= -->
+<section id="lesson1-part1">
+  <h2>Part 1: 前回チェック（ウォームアップ）</h2>
+
+  <p>① 前回の単語テスト（自己申告）</p>
+  <label>前回の点数(10点満点):
+    <input type="number" id="lesson1-prev-score" min="0" max="10" style="width:4em;">
+  </label>
+
+  <p style="margin-top:1rem;">② 前回の音読サンプルをもう一度聞こう</p>
+  <button id="lesson1-play-prev-reading">▶ 前回の自分の音読（※ダミー）</button>
+  <audio id="lesson1-prev-audio" src="" controls style="display:block;margin-top:0.5rem;">
+    <!-- あとで先生が音声URLを入れる場所 -->
+  </audio>
+
+  <hr style="margin:1.5rem 0;">
+  <p>③ ウォームアップ音読（録音）</p>
+  <p>「Hi, John. What's wrong?」と言ってみよう。</p>
+
+  <div>
+    <button id="lesson1-start-warmup">●録音スタート</button>
+    <button id="lesson1-stop-warmup" disabled>■ストップ</button>
+  </div>
+  <audio id="lesson1-warmup-playback" controls style="display:block;margin-top:0.5rem;"></audio>
+  <a id="lesson1-warmup-download" download="lesson1-warmup.webm" style="display:none;">録音データを保存</a>
+</section>
+
+<!-- ================= PART 2 ================= -->
+<section id="lesson1-part2">
+  <h2>Part 2: 今日の重要単語10</h2>
+  <ul id="lesson1-word-list" style="list-style:none;padding-left:0;">
+    <li><button class="speak-btn" data-text="oversleep">▶</button> oversleep - 寝過ごす</li>
+    <li><button class="speak-btn" data-text="forget">▶</button> forget - 忘れる</li>
+    <li><button class="speak-btn" data-text="lunch date">▶</button> lunch date - 昼ごはんの約束 / デート</li>
+    <li><button class="speak-btn" data-text="girlfriend">▶</button> girlfriend - 彼女</li>
+    <li><button class="speak-btn" data-text="That's too bad">▶</button> that's too bad - それは大変だね</li>
+    <li><button class="speak-btn" data-text="stay up late">▶</button> stay up late - 夜更かしする</li>
+    <li><button class="speak-btn" data-text="angry">▶</button> angry - 怒っている</li>
+    <li><button class="speak-btn" data-text="busy">▶</button> busy - 忙しい</li>
+    <li><button class="speak-btn" data-text="send">▶</button> send - 送る</li>
+    <li><button class="speak-btn" data-text="flowers">▶</button> flowers - 花</li>
+  </ul>
+</section>
+
+<!-- ================= PART 3 ================= -->
+<section id="lesson1-part3">
+  <h2>Part 3: 単語チェッククイズ</h2>
+  <p>英語の意味として正しいものを1つ選んでください。</p>
+
+  <form id="lesson1-quiz">
+    <div style="margin-bottom:1rem;">
+      <p>1) oversleep</p>
+      <label><input type="radio" name="q1" value="a"> 夜更かしする</label><br>
+      <label><input type="radio" name="q1" value="b"> 寝過ごす</label><br>
+      <label><input type="radio" name="q1" value="c"> 花を送る</label><br>
+      <label><input type="radio" name="q1" value="d"> 忙しい</label>
+    </div>
+
+    <div style="margin-bottom:1rem;">
+      <p>2) angry</p>
+      <label><input type="radio" name="q2" value="a"> 怒っている</label><br>
+      <label><input type="radio" name="q2" value="b"> 寝過ごす</label><br>
+      <label><input type="radio" name="q2" value="c"> 彼女</label><br>
+      <label><input type="radio" name="q2" value="d"> 忙しい</label>
+    </div>
+
+    <div style="margin-bottom:1rem;">
+      <p>3) busy</p>
+      <label><input type="radio" name="q3" value="a"> 忙しい</label><br>
+      <label><input type="radio" name="q3" value="b"> 花</label><br>
+      <label><input type="radio" name="q3" value="c"> 忘れる</label><br>
+      <label><input type="radio" name="q3" value="d"> デートの約束</label>
+    </div>
+
+    <button type="button" id="lesson1-grade-btn">採点する</button>
+  </form>
+
+  <p id="lesson1-result" style="font-weight:bold;margin-top:1rem;"></p>
+</section>
+
+<!-- ================= PART 4 ================= -->
+<section id="lesson1-part4">
+  <h2>Part 4: 精読 / 意味チェック</h2>
+
+  <div class="sentence-box">
+    <p><strong>English:</strong> "Hi, John. What's wrong? You don't look well."</p>
+    <p><strong>日本語イメージ:</strong> 「ジョン、どうしたの？元気なさそうだよ。」</p>
+    <p><strong>Key words:</strong> what's wrong? / look well</p>
+    <button class="speak-sentence" data-text="Hi, John. What's wrong? You don't look well.">▶ 読み上げ</button>
+  </div>
+
+  <div class="sentence-box">
+    <p><strong>English:</strong> "I overslept this morning and forgot about a lunch date with my girlfriend."</p>
+    <p><strong>日本語イメージ:</strong> 「今朝寝過ごして、彼女とのランチの約束を忘れちゃったんだ。」</p>
+    <p><strong>Key words:</strong> overslept / forgot / lunch date / girlfriend</p>
+    <button class="speak-sentence" data-text="I overslept this morning and forgot about a lunch date with my girlfriend.">▶ 読み上げ</button>
+  </div>
+
+  <div class="sentence-box">
+    <p><strong>English:</strong> "She's really angry, and I'm very busy tomorrow."</p>
+    <p><strong>日本語イメージ:</strong> 「彼女は本気で怒ってるし、明日はとても忙しいんだ。」</p>
+    <p><strong>Key words:</strong> angry / busy / tomorrow</p>
+    <button class="speak-sentence" data-text="She's really angry, and I'm very busy tomorrow.">▶ 読み上げ</button>
+  </div>
+
+  <div class="sentence-box">
+    <p><strong>English:</strong> "How about sending her flowers?"</p>
+    <p><strong>日本語イメージ:</strong> 「花を送ってあげるのはどう？」</p>
+    <p><strong>Key words:</strong> how about ~ing / sending / flowers</p>
+    <button class="speak-sentence" data-text="How about sending her flowers?">▶ 読み上げ</button>
+  </div>
+</section>
+
+<!-- ================= PART 5 ================= -->
+<section id="lesson1-part5">
+  <h2>Part 5: リスニング書き取り</h2>
+  <p>音を聞いて、英語をそのまま入力してね。（大文字/小文字は気にしなくてOK）</p>
+
+  <div style="margin-bottom:1rem;">
+    <p>Q1</p>
+    <button class="listen-btn" data-text="I overslept this morning.">▶ 再生</button><br>
+    <input type="text" id="lesson1-dict1">
+  </div>
+
+  <div style="margin-bottom:1rem;">
+    <p>Q2</p>
+    <button class="listen-btn" data-text="She's really angry.">▶ 再生</button><br>
+    <input type="text" id="lesson1-dict2">
+  </div>
+
+  <div style="margin-bottom:1rem;">
+    <p>Q3</p>
+    <button class="listen-btn" data-text="How about sending her flowers?">▶ 再生</button><br>
+    <input type="text" id="lesson1-dict3">
+  </div>
+
+  <button id="lesson1-check-dict">答え合わせ</button>
+
+  <p id="lesson1-dict-result" style="font-weight:bold;margin-top:1rem;"></p>
+</section>
+
+<!-- ================= PART 6 ================= -->
+<section id="lesson1-part6">
+  <h2>Part 6: シャドーイング練習</h2>
+  <p>ボタンを押して英語が流れたら、すぐ後をまねして声に出そう！</p>
+
+  <div style="margin-bottom:1rem;">
+    <p>"I stayed up late watching TV."</p>
+    <button class="shadow-btn" data-text="I stayed up late watching TV.">▶ シャドー</button>
+    <div class="shadow-status"></div>
+  </div>
+
+  <div style="margin-bottom:1rem;">
+    <p>"You don't look well."</p>
+    <button class="shadow-btn" data-text="You don't look well.">▶ シャドー</button>
+    <div class="shadow-status"></div>
+  </div>
+</section>
+
+<!-- ================= PART 7 ================= -->
+<section id="lesson1-part7">
+  <h2>Part 7: 音読ドリル（全文）</h2>
+  <p>3回以上、声に出して読んで。さいごに自分のベストを録音して先生に提出しよう。</p>
+
+  <div class="conv-box">
+Saki: Hi, John. What's wrong? You don't look well.
+John: I overslept this morning and forgot about a lunch date with my girlfriend.
+Saki: That's too bad. What happened?
+John: I stayed up late watching TV.
+Saki: I see. Why don't you go to lunch with her tomorrow?
+John: I can't do that. She's really angry, and I'm very busy tomorrow.
+Saki: How about sending her flowers?
+John: That's a good idea. Thanks.
+  </div>
+
+  <div style="margin-top:1rem;">
+    <button id="lesson1-start-readrec">●録音スタート(ベスト音読)</button>
+    <button id="lesson1-stop-readrec" disabled>■ストップ</button>
+  </div>
+  <audio id="lesson1-readrec-playback" controls style="margin-top:0.5rem;"></audio>
+  <a id="lesson1-readrec-download" download="lesson1-reading.webm" style="display:none;">この音声を保存（提出用）</a>
+</section>
+
+<!-- ================= PART 8 ================= -->
+<section id="lesson1-part8">
+  <h2>Part 8: 宿題提出（デモ）</h2>
+  <p>ほんとの運用では、ここをGoogleフォームの埋め込みに差し替えると、そのまま自動でスプレッドシートに記録されます。</p>
+
+  <form onsubmit="alert('提出ありがとう！(デモ)'); return false;" style="max-width:400px;">
+    <label>名前：
+      <input type="text" name="student_name" required>
+    </label><br><br>
+
+    <label>日付：
+      <input type="date" name="submit_date" required>
+    </label><br><br>
+
+    <label>レッスン番号：
+      <input type="text" name="lesson_no" value="Lesson 1">
+    </label><br><br>
+
+    <label>単語テスト点（10点満点）：
+      <input type="number" name="vocab_score" min="0" max="10">
+    </label><br><br>
+
+    <label>音読音声ファイルのURL（Googleドライブ等の共有リンク）：
+      <input type="text" name="audio_url" placeholder="例：ドライブの共有リンク">
+    </label><br><br>
+
+    <label>メモ（わからなかったところなど）：
+      <textarea name="memo" rows="3"></textarea>
+    </label><br><br>
+
+    <button type="submit">提出（デモ）</button>
+  </form>
+</section>
+
+<!-- ================= JS (音声/録音機能) ================= -->
+<script>
+// ----- Part2: 単語読み上げ / Part4: 文読み上げ / Part5: Dictation再生 -----
+function speakText(t){
+  const u = new SpeechSynthesisUtterance(t);
+  u.lang = 'en-US';
+  speechSynthesis.speak(u);
+}
+
+// Part2 単語
+document.querySelectorAll('#lesson1-part2 .speak-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    speakText(btn.getAttribute('data-text'));
+  });
+});
+
+// Part4 精読の文
+document.querySelectorAll('#lesson1-part4 .speak-sentence').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    speakText(btn.getAttribute('data-text'));
+  });
+});
+
+// Part5 リスニング問題
+document.querySelectorAll('#lesson1-part5 .listen-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    speakText(btn.getAttribute('data-text'));
+  });
+});
+
+// ----- Part3: 単語クイズ採点 -----
+(function(){
+  const answers = {q1:'b', q2:'a', q3:'a'};
+  const gradeBtn = document.getElementById('lesson1-grade-btn');
+  const resultP = document.getElementById('lesson1-result');
+  gradeBtn.addEventListener('click', ()=>{
+    let score = 0;
+    const total = 3;
+    Object.keys(answers).forEach(q=>{
+      const checked = document.querySelector('input[name="'+q+'"]:checked');
+      if(checked && checked.value === answers[q]) score++;
+    });
+    const percent = Math.round((score/total)*10); // 10点満点イメージ
+    resultP.textContent = "正解数: "+score+"/"+total+
+      " → 単語スコア目安: "+percent+"/10点";
+  });
+})();
+
+// ----- Part5: ディクテーション答え合わせ -----
+(function(){
+  const checkBtn = document.getElementById('lesson1-check-dict');
+  const resultBox = document.getElementById('lesson1-dict-result');
+  checkBtn.addEventListener('click', ()=>{
+    const ans = [
+      "i overslept this morning.",
+      "she's really angry.",
+      "how about sending her flowers?"
+    ];
+    const user = [
+      document.getElementById('lesson1-dict1').value.trim().toLowerCase(),
+      document.getElementById('lesson1-dict2').value.trim().toLowerCase(),
+      document.getElementById('lesson1-dict3').value.trim().toLowerCase()
+    ];
+    let correct = 0;
+    for(let i=0;i<ans.length;i++){
+      if(user[i] === ans[i]) correct++;
+    }
+    resultBox.textContent = "正解数: "+correct+"/"+ans.length+" よく聞けた？";
+  });
+})();
+
+// ----- Part6: シャドーイング -----
+(function(){
+  function speakThenCue(sentence, statusBox){
+    statusBox.textContent = "Listening...";
+    const u = new SpeechSynthesisUtterance(sentence);
+    u.lang = 'en-US';
+    u.onend = () => {
+      setTimeout(()=>{
+        statusBox.textContent = "Now repeat!";
+        setTimeout(()=>{ statusBox.textContent = ""; },2000);
+      },1000);
+    };
+    speechSynthesis.speak(u);
+  }
+  document.querySelectorAll('#lesson1-part6 .shadow-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const wrap = btn.parentElement;
+      const statusBox = wrap.querySelector('.shadow-status');
+      speakThenCue(btn.getAttribute('data-text'), statusBox);
+    });
+  });
+})();
+
+// ----- Part1 & Part7: 録音機能 (ブラウザ録音) -----
+async function setupRecorder(startBtnId, stopBtnId, audioId, dlId){
+  let mediaRecorder;
+  let chunks = [];
+  const startBtn = document.getElementById(startBtnId);
+  const stopBtn = document.getElementById(stopBtnId);
+  const playback = document.getElementById(audioId);
+  const dl = document.getElementById(dlId);
+
+  startBtn.addEventListener('click', async ()=>{
+    chunks = [];
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mediaRecorder = new MediaRecorder(stream);
+    mediaRecorder.start();
+    startBtn.disabled = true;
+    stopBtn.disabled = false;
+    mediaRecorder.ondataavailable = e => chunks.push(e.data);
+    mediaRecorder.onstop = ()=>{
+      const blob = new Blob(chunks, { type: 'audio/webm' });
+      const url = URL.createObjectURL(blob);
+      playback.src = url;
+      dl.href = url;
+      dl.style.display = 'inline-block';
+    };
+  });
+
+  stopBtn.addEventListener('click', ()=>{
+    mediaRecorder.stop();
+    startBtn.disabled = false;
+    stopBtn.disabled = true;
+  });
+}
+
+// Part1のウォームアップ録音
+setupRecorder(
+  'lesson1-start-warmup',
+  'lesson1-stop-warmup',
+  'lesson1-warmup-playback',
+  'lesson1-warmup-download'
+);
+
+// Part7のベスト音読録音
+setupRecorder(
+  'lesson1-start-readrec',
+  'lesson1-stop-readrec',
+  'lesson1-readrec-playback',
+  'lesson1-readrec-download'
+);
+
+</script>
+
+</body>
+</html>
