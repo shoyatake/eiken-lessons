@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>中学生英検 読書＆音読レッスン</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.5;
+        margin: 0;
+        padding: 1rem;
+        background: #f5f5f5;
+      }
+      h1 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+      }
+      h2 {
+        margin-top: 0;
+      }
+      .section {
+        background: #fff;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .flex {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+      button {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 4px;
+        background: #0073aa;
+        color: white;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #005f8a;
+      }
+      input[type="range"] {
+        vertical-align: middle;
+      }
+      label {
+        margin-right: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 0.5rem;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 0.5rem;
+        text-align: left;
+      }
+      th {
+        background: #f0f0f0;
+      }
+      .output {
+        background: #eef9ff;
+        padding: 0.5rem;
+        border-radius: 4px;
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+      }
+      ol {
+        padding-left: 1.5rem;
+      }
+      ol li {
+        margin-bottom: 0.3rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>中学生英検 読書＆音読レッスン</h1>
+    <div class="section">
+      <label for="lessonSelect">レッスン選択:</label>
+      <select id="lessonSelect"></select>
+    </div>
+    <div class="section" id="lessonArea">
+      <h2 id="lessonTitle"></h2>
+      <div id="sentences"></div>
+      <label><input type="checkbox" id="toggleTranslation" /> 日本語訳を表示する</label>
+    </div>
+    <div class="section" id="practiceArea">
+      <h3>音読・読解のステップ</h3>
+      <p>下の手順に沿って読解と音読の練習を進めましょう。</p>
+      <ol>
+        <li>短文を音読し、録音しましょう（🎤 <strong>まず読んでみる</strong>）。</li>
+        <li>重要単語を確認し、意味を覚えましょう。</li>
+        <li>日本語訳を表示して、精読し理解を深めましょう。</li>
+        <li>音声を聴いてリズムを身につけましょう。</li>
+        <li>シャドーイング練習（🎧 <strong>シャドーイング</strong>）。</li>
+        <li>音声速度を上げて繰り返しましょう（スライダーで調整）。</li>
+        <li>オーバーラッピング（🎧 <strong>オーバーラッピング</strong>）。</li>
+        <li>最後にもう一度音読して録音し、進歩を確認しましょう（📖 <strong>最後に読む</strong>）。</li>
+      </ol>
+      <div class="flex">
+        <button id="firstReadBtn">🎤 まず読んでみる</button>
+        <button id="shadowBtn">🎧 シャドーイング</button>
+        <button id="overlapBtn">🎧 オーバーラッピング</button>
+        <button id="finalReadBtn">📖 最後に読む</button>
+      </div>
+      <div class="flex">
+        <label>音声速度 <input type="range" id="rateSlider" min="0.6" max="1.4" step="0.1" value="1" /></label>
+        <label>音声タイプ
+          <select id="voiceSelect"></select>
+        </label>
+      </div>
+      <div id="firstOutput" class="output" style="display:none;"></div>
+      <div id="finalOutput" class="output" style="display:none;"></div>
+      <div id="improvement" class="output" style="display:none;"></div>
+    </div>
+    <div class="section" id="vocabArea">
+      <h3>語彙</h3>
+      <button id="flipVocab">英⇔日 反転</button>
+      <table id="vocabTable"></table>
+    </div>
+    <div class="section">
+      <h3>自己採点</h3>
+      <label>正解数: <input type="number" id="scoreInput" min="0" /></label>
+      <button id="saveCsv">CSVダウンロード</button>
+      <button id="sendForm">Googleフォーム送信</button>
+      <input type="text" id="formUrl" placeholder="GoogleフォームのURL (formResponse)" style="width:100%;margin-top:0.5rem;" />
+    </div>
+    <script>
+      // サンプルレッスンデータ。各レッスンは文章と語彙を含みます。
+      const LESSONS = [
+        {
+          title: 'レッスン1',
+          sentences: [
+            { en: 'Reading English every day improves your skills.', jp: '英語を毎日読むことでスキルが向上します。' },
+            { en: 'Practice makes perfect.', jp: '練習は完璧を作る。' },
+            { en: 'Listen carefully and repeat.', jp: 'よく聞いて繰り返してください。' },
+          ],
+          vocab: [
+            ['improve', '向上する'],
+            ['practice', '練習'],
+            ['perfect', '完璧'],
+            ['carefully', '注意深く'],
+            ['repeat', '繰り返す'],
+          ],
+        },
+        {
+          title: 'レッスン2',
+          sentences: [
+            { en: 'Shadowing helps improve your pronunciation.', jp: 'シャドーイングは発音を向上させるのに役立ちます。' },
+            { en: 'Overlapping trains your rhythm and fluency.', jp: 'オーバーラッピングはリズムと流暢さを鍛えます。' },
+            { en: 'You can do it!', jp: 'あなたならできます！' },
+          ],
+          vocab: [
+            ['shadowing', 'シャドーイング'],
+            ['pronunciation', '発音'],
+            ['overlapping', 'オーバーラッピング'],
+            ['rhythm', 'リズム'],
+            ['fluency', '流暢さ'],
+          ],
+        },
+        // 追加のレッスンは必要に応じてここに定義してください。
+      ];
+
+      // 必要に応じて15レッスンまでコピーで増やす
+      while (LESSONS.length < 15) {
+        const base = JSON.parse(JSON.stringify(LESSONS[LESSONS.length % 2]));
+        base.title = `レッスン${LESSONS.length + 1}`;
+        LESSONS.push(base);
+      }
+
+      let expectedText = '';
+      let firstTranscript = '';
+      let finalTranscript = '';
+      let firstAccuracy = null;
+      let finalAccuracy = null;
+
+      const lessonSelect = document.getElementById('lessonSelect');
+      const lessonTitle = document.getElementById('lessonTitle');
+      const sentencesEl = document.getElementById('sentences');
+      const toggleTranslation = document.getElementById('toggleTranslation');
+      const flipVocab = document.getElementById('flipVocab');
+      const vocabTable = document.getElementById('vocabTable');
+      const rateSlider = document.getElementById('rateSlider');
+      const voiceSelect = document.getElementById('voiceSelect');
+      const firstReadBtn = document.getElementById('firstReadBtn');
+      const finalReadBtn = document.getElementById('finalReadBtn');
+      const shadowBtn = document.getElementById('shadowBtn');
+      const overlapBtn = document.getElementById('overlapBtn');
+      const firstOutput = document.getElementById('firstOutput');
+      const finalOutput = document.getElementById('finalOutput');
+      const improvement = document.getElementById('improvement');
+      const scoreInput = document.getElementById('scoreInput');
+      const saveCsv = document.getElementById('saveCsv');
+      const sendForm = document.getElementById('sendForm');
+      const formUrl = document.getElementById('formUrl');
+
+      // Populate lesson dropdown
+      LESSONS.forEach((lesson, idx) => {
+        const option = document.createElement('option');
+        option.value = idx;
+        option.textContent = lesson.title;
+        lessonSelect.appendChild(option);
+      });
+
+      // Load voices for TTS
+      function populateVoices() {
+        const voices = speechSynthesis.getVoices();
+        voiceSelect.innerHTML = '';
+        voices.forEach((voice, idx) => {
+          const option = document.createElement('option');
+          option.value = idx;
+          option.textContent = `${voice.lang} - ${voice.name}`;
+          voiceSelect.appendChild(option);
+        });
+      }
+      populateVoices();
+      if (speechSynthesis.onvoiceschanged !== undefined) {
+        speechSynthesis.onvoiceschanged = populateVoices;
+      }
+
+      function renderLesson() {
+        const lesson = LESSONS[parseInt(lessonSelect.value)];
+        lessonTitle.textContent = lesson.title;
+        sentencesEl.innerHTML = '';
+        expectedText = '';
+        lesson.sentences.forEach((sent) => {
+          const p = document.createElement('p');
+          p.innerHTML = `<span class="en">${sent.en}</span> <span class="jp" style="display:none;">${sent.jp}</span>`;
+          sentencesEl.appendChild(p);
+          expectedText += sent.en + ' ';
+        });
+        renderVocab();
+        firstOutput.style.display = 'none';
+        finalOutput.style.display = 'none';
+        improvement.style.display = 'none';
+      }
+
+      function toggleTranslations() {
+        const show = toggleTranslation.checked;
+        document.querySelectorAll('#sentences .jp').forEach((span) => {
+          span.style.display = show ? 'inline' : 'none';
+        });
+      }
+
+      function renderVocab() {
+        const lesson = LESSONS[parseInt(lessonSelect.value)];
+        vocabTable.innerHTML = '';
+        const thead = document.createElement('thead');
+        const headerRow = document.createElement('tr');
+        const firstHead = document.createElement('th');
+        const secondHead = document.createElement('th');
+        if (flipVocab.dataset.flipped === 'true') {
+          firstHead.textContent = '日本語';
+          secondHead.textContent = '英語';
+        } else {
+          firstHead.textContent = '英語';
+          secondHead.textContent = '日本語';
+        }
+        headerRow.appendChild(firstHead);
+        headerRow.appendChild(secondHead);
+        thead.appendChild(headerRow);
+        vocabTable.appendChild(thead);
+        const tbody = document.createElement('tbody');
+        lesson.vocab.forEach((word) => {
+          const tr = document.createElement('tr');
+          if (flipVocab.dataset.flipped === 'true') {
+            tr.innerHTML = `<td>${word[1]}</td><td>${word[0]}</td>`;
+          } else {
+            tr.innerHTML = `<td>${word[0]}</td><td>${word[1]}</td>`;
+          }
+          tbody.appendChild(tr);
+        });
+        vocabTable.appendChild(tbody);
+      }
+
+      function speakLesson(rate) {
+        const utterance = new SpeechSynthesisUtterance(expectedText.trim());
+        const selectedVoice = speechSynthesis.getVoices()[parseInt(voiceSelect.value)];
+        if (selectedVoice) utterance.voice = selectedVoice;
+        utterance.rate = rate;
+        speechSynthesis.speak(utterance);
+      }
+
+      function recordReading(stage) {
+        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+          alert('このブラウザでは音声認識がサポートされていません。');
+          return;
+        }
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'en-US';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+        recognition.onresult = (event) => {
+          const transcript = event.results[0][0].transcript;
+          const accuracy = calculateAccuracy(transcript, expectedText);
+          if (stage === 'first') {
+            firstTranscript = transcript;
+            firstAccuracy = accuracy;
+            firstOutput.style.display = 'block';
+            firstOutput.textContent = `最初の読み: ${transcript}\n一致率: ${(accuracy * 100).toFixed(2)}%`;
+          } else {
+            finalTranscript = transcript;
+            finalAccuracy = accuracy;
+            finalOutput.style.display = 'block';
+            finalOutput.textContent = `最後の読み: ${transcript}\n一致率: ${(accuracy * 100).toFixed(2)}%`;
+            improvement.style.display = 'block';
+            if (firstAccuracy != null) {
+              const diff = ((finalAccuracy - firstAccuracy) * 100).toFixed(2);
+              improvement.textContent = `改善率: ${diff}%`;
+            } else {
+              improvement.textContent = '';
+            }
+          }
+        };
+        recognition.onerror = (event) => {
+          alert('音声認識中にエラーが発生しました: ' + event.error);
+        };
+        recognition.start();
+      }
+
+      function calculateAccuracy(transcript, reference) {
+        const t = transcript.trim().toLowerCase().split(/\s+/);
+        const r = reference.trim().toLowerCase().split(/\s+/);
+        const len = Math.max(t.length, r.length);
+        let matches = 0;
+        for (let i = 0; i < len; i++) {
+          if (t[i] === r[i]) matches++;
+        }
+        return matches / len;
+      }
+
+      function saveCsvFile() {
+        const date = new Date().toISOString();
+        const lesson = LESSONS[parseInt(lessonSelect.value)].title;
+        const score = scoreInput.value || '';
+        const rows = [
+          ['date', 'lesson', 'score', 'first_transcript', 'first_accuracy', 'final_transcript', 'final_accuracy'],
+          [date, lesson, score, firstTranscript, firstAccuracy ?? '', finalTranscript, finalAccuracy ?? ''],
+        ];
+        const csvContent = rows.map((r) => r.join(',')).join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `reading_lesson_score_${Date.now()}.csv`;
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      function sendToForm() {
+        const url = formUrl.value.trim();
+        if (!url) {
+          alert('GoogleフォームのURLを入力してください。');
+          return;
+        }
+        const data = new FormData();
+        data.append('entry.lesson', LESSONS[parseInt(lessonSelect.value)].title);
+        data.append('entry.score', scoreInput.value);
+        data.append('entry.date', new Date().toISOString());
+        data.append('entry.firstTranscript', firstTranscript);
+        data.append('entry.firstAccuracy', firstAccuracy ?? '');
+        data.append('entry.finalTranscript', finalTranscript);
+        data.append('entry.finalAccuracy', finalAccuracy ?? '');
+        fetch(url, {
+          method: 'POST',
+          mode: 'no-cors',
+          body: data,
+        })
+          .then(() => alert('フォームに送信しました。'))
+          .catch(() => alert('送信に失敗しました。'));
+      }
+
+      // Event listeners
+      lessonSelect.addEventListener('change', renderLesson);
+      toggleTranslation.addEventListener('change', toggleTranslations);
+      flipVocab.addEventListener('click', () => {
+        flipVocab.dataset.flipped = flipVocab.dataset.flipped === 'true' ? 'false' : 'true';
+        renderVocab();
+      });
+      saveCsv.addEventListener('click', saveCsvFile);
+      sendForm.addEventListener('click', sendToForm);
+      firstReadBtn.addEventListener('click', () => recordReading('first'));
+      finalReadBtn.addEventListener('click', () => recordReading('final'));
+      shadowBtn.addEventListener('click', () => speakLesson(parseFloat(rateSlider.value)));
+      overlapBtn.addEventListener('click', () => speakLesson(parseFloat(rateSlider.value)));
+
+      // Initial render
+      lessonSelect.value = 0;
+      renderLesson();
+    </script>
+  </body>
+</html>
